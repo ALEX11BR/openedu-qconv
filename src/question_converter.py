@@ -23,7 +23,7 @@ def cli():
     "-i", "--input-file", "input_file_path", required=False, help="Input file path"
 )
 @click.option(
-    "-d", "--input-path", "input_dir_path", required=False, help="Input directory (read all `.input_format` files from the input path)"
+    "-d", "--input-path", "input_dir_path", required=False, multiple=True, help="Input directory (read all `.input_format` files from the input path)"
 )
 @click.option(
     "-o", "--output-file", "output_file_path", required=False, help="Output file path"
@@ -53,7 +53,7 @@ def convert(input_file_path, input_dir_path, output_file_path, output_dir_path, 
     """
     Converts files to different formats.
     """
-    if input_file_path is None and input_dir_path is None:
+    if input_file_path is None and input_dir_path == ():
         raise click.UsageError(
             "One of --input-path or --input-file must be set."
         )
@@ -100,8 +100,8 @@ def convert(input_file_path, input_dir_path, output_file_path, output_dir_path, 
         with open(input_file_path, "r", encoding="UTF-8") as input_file:
             input_content = input_file.read().rstrip('\n')
 
-    if input_dir_path is not None:
-        read_files = glob.glob(input_dir_path + "/*.md")
+    for input_dir in input_dir_path:
+        read_files = glob.glob(input_dir + "/*.md")
         for f in read_files:
             with open(f, "rb") as infile:
                 input_content += infile.read().decode("utf-8")
