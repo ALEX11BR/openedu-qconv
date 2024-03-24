@@ -44,15 +44,39 @@ def cli():
     help="The output format",
 )
 @click.option(
+    "-f",
+    "--config-file",
+    "config_file_path",
+    required=False,
+    help="Configuration file path",
+)
+@click.option(
     "-c",
     "--category",
     required=False,
     help="Category specifier for XML quizzes",
 )
-def convert(input_file_path, input_dir_path, output_file_path, output_dir_path, input_format, output_format, category=None):
+def convert(input_file_path, input_dir_path, output_file_path, output_dir_path, input_format, output_format, config_file_path, category=None):
     """
     Converts files to different formats.
     """
+    if config_file_path is not None:
+        with open(config_file_path, "r") as config_file:
+            config = json.load(config_file)
+
+            if "input-file" in config:
+                input_file_path = config["input-file"]
+            if "input-dirs" in config:
+                input_dir_path += tuple(config["input-dirs"])
+            if "output-file" in config:
+                output_file_path = config["output-file"]
+            if "output-dir" in config:
+                output_dir_path = config["output-dir"]
+            if "input-format" in config and config["input-format"].upper() in ["JSON", "XML", "MD"]:
+                input_format = config["input-format"].upper()
+            if "output-format" in config and config["output-format"].upper() in ["JSON", "XML", "MD"]:
+                output_format = config["output-format"].upper()
+
     if input_file_path is None and input_dir_path == ():
         raise click.UsageError(
             "One of --input-path or --input-file must be set."

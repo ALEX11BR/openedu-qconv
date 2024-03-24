@@ -44,6 +44,7 @@ Options:
                                   The input format
   -of, --output-format [JSON|XML|MD]
                                   The output format
+  -f, --config-file TEXT          Configuration file path
   -c, --category TEXT             Category specifier for XML quizzes
   --help                          Show this message and exit.
 ```
@@ -141,6 +142,29 @@ total 96
 ```
 
 You can see that the questions are saved in a file with the question name as the filename.
+
+## Configuration file format
+
+A configuration file can be provided using the `--config-file` flag.
+
+For instance, we can use:
+
+```console
+python3 src/question_converter.py --config-file config.json
+```
+
+An example `config.json` config file format with all the available fields is:
+
+```json
+{
+  "input-file": "One_Question.md",
+  "input-dirs": ["chapter/io/lab/quiz", "chapter/data/lab/quiz"],
+  "output-file": "Moodle_Questions.xml",
+  "output-dir": "questions",
+  "input-format": "MD",
+  "output-format": "XML"
+}
+```
 
 ## Question Format
 
